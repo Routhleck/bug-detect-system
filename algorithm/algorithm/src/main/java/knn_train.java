@@ -45,7 +45,7 @@ public class knn_train {
         // String ProjectPath=knn_train.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         // System.out.println(ProjectPath);
         // knn参数设置
-        int k = 5;
+        int k = 3;
 
         // 读取训练集csv，为Datasets/AEEEM/csv/JDT.csv
         double[][][] train_set = new double[0][][];
@@ -54,6 +54,7 @@ public class knn_train {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("训练集读取完成，训练集大小：" + train_set.length);
         // 读取测试集csv，为Datasets/AEEEM/csv/Lucene.csv
         double[][][] test_set = new double[0][][];
         try {
@@ -61,17 +62,31 @@ public class knn_train {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("测试集读取完成，测试集大小：" + test_set.length);
+        // 测试集标签比例
+        int buggy = 0;
+        for (int i = 0; i < test_set.length; i++) {
+            if (test_set[i][1][0] == 1) {
+                buggy++;
+            }
+        }
+        System.out.println("测试集中buggy比例：" + buggy + "/" + test_set.length + "=" + buggy / (double) test_set.length);
         // 创建knn对象
         knn knn = new knn(k);
         // 训练
+        System.out.println("开始训练");
         for (double[][] v : train_set) {
             knn.fit(v[0], (int)v[1][0]);
         }
+        System.out.println("训练完成");
+        System.out.println("开始测试");
         // 测试
         int[] result = new int[test_set.length];
         for (int i = 0; i < test_set.length; i++) {
             result[i] = knn.predict(test_set[i][0]);
+            System.out.println("第" + (i+1) + "个测试样本，预测结果为：" + result[i] + "，实际结果为：" + test_set[i][1][0]);
         }
+        System.out.println("测试完成");
         // 原本的标签
         int[] label = new int[test_set.length];
         for (int i = 0; i < test_set.length; i++) {
