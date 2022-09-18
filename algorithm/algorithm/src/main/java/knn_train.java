@@ -50,7 +50,7 @@ public class knn_train {
         // 读取训练集csv，为Datasets/AEEEM/csv/JDT.csv
         double[][][] train_set = new double[0][][];
         try {
-            train_set = readTrainSet(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/JDT.csv");
+            train_set = readTrainSet(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/PDE.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -84,7 +84,7 @@ public class knn_train {
         int[] result = new int[test_set.length];
         for (int i = 0; i < test_set.length; i++) {
             result[i] = knn.predict(test_set[i][0]);
-            System.out.println("第" + (i+1) + "个测试样本，预测结果为：" + result[i] + "，实际结果为：" + (int)test_set[i][1][0]);
+            // System.out.println("第" + (i+1) + "个测试样本，预测结果为：" + result[i] + "，实际结果为：" + (int)test_set[i][1][0]);
         }
         System.out.println("测试完成");
         // 原本的标签

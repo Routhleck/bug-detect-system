@@ -158,8 +158,8 @@ public class knn {
             votes[i] = (int) voteBlock[i][1];
         }
         // System.out.println(voteBlock.length);
-        System.out.println(Arrays.deepToString(voteBlock));
-        System.out.println(Arrays.toString(votes));
+        // System.out.println(Arrays.deepToString(voteBlock));
+        // System.out.println(Arrays.toString(votes));
 
         // 返回k个数据中出现最多的标签
         return this.mode(votes);
