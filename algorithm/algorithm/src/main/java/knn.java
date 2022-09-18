@@ -1,3 +1,4 @@
+import java.util.Arrays;
 
 /**
  * @program: algorithm
@@ -34,8 +35,8 @@ public class knn {
     }
 
     // 更新最大值
-    public double updateMax(double val, double[] arr){
-        double max = val;
+    public double updateMax(double[] arr){
+        double max = 0;
         for (double v : arr) {
             if (v > max) {
                 max = v;
@@ -45,7 +46,7 @@ public class knn {
     }
 
     // 返回分类结果, 1为buggy, 0为clean
-    public int mode(int arr[]){
+    public int mode(int[] arr){
         int[] frequency = new int[arr.length];
         int max = 0;
         int result = -1;
@@ -57,6 +58,8 @@ public class knn {
                 result = j;
             }
         }
+        System.out.println(Arrays.toString(arr));
+        System.out.println(Arrays.toString(frequency));
         return result;
     }
 
@@ -72,23 +75,15 @@ public class knn {
 
     // 预测函数
     public int predict(double[] vector){
-        // 计算测试数据与训练集中每个数据的距离
-        double[] dists = new double[this.train_set.length];
-        for (int i = 0; i < this.train_set.length; i++) {
-            dists[i] = this.dist(vector, this.train_set[i][0]);
-        }
-        // 找出距离最小的k个数据
-        double[] k_dists = new double[this.k];
-        for (int i = 0; i < this.k; i++) {
-            k_dists[i] = this.updateMax(Double.MAX_VALUE, dists);
-        }
-        // 找出k个数据中的标签
-        int[] k_labels = new int[this.k];
-        for (int i = 0; i < this.k; i++) {
-            for (int j = 0; j < dists.length; j++) {
-                if (dists[j] == k_dists[i]){
-                    k_labels[i] = (int) this.train_set[j][1][0];
-                }
+        double maxDistance = 0;
+        double[][] voteBlock = new double[0][2];
+
+        for (double[][] train_set : this.train_set) {
+
+            double distance = this.dist(train_set[0], vector);
+            int label = (int) train_set[1][0];
+            if (voteBlock.length < this.k){
+                
             }
         }
         // 返回k个数据中出现最多的标签

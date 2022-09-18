@@ -45,7 +45,7 @@ public class knn_train {
         // String ProjectPath=knn_train.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         // System.out.println(ProjectPath);
         // knn参数设置
-        int k = 3;
+        int k = 20;
 
         // 读取训练集csv，为Datasets/AEEEM/csv/JDT.csv
         double[][][] train_set = new double[0][][];
@@ -58,7 +58,7 @@ public class knn_train {
         // 读取测试集csv，为Datasets/AEEEM/csv/Lucene.csv
         double[][][] test_set = new double[0][][];
         try {
-            test_set = readTrainSet(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/Lucene.csv");
+            test_set = readTrainSet(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/JDT.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
