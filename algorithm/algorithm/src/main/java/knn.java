@@ -38,7 +38,7 @@ public class knn {
     public double updateMax(double[] arr){
         double max = 0;
         for (double v : arr) {
-            if (v > max) {
+            if (v >= max) {
                 max = v;
             }
         }
@@ -47,7 +47,7 @@ public class knn {
 
     // 返回分类结果, 1为buggy, 0为clean
     public int mode(int[] arr){
-        int[] frequency = new int[arr.length];
+        int[] frequency = new int[2];
         int max = 0;
         int result = -1;
         // 看arr[]中出现最多的数字是多少，返回result
@@ -58,13 +58,24 @@ public class knn {
                 result = j;
             }
         }
-        System.out.println(Arrays.toString(arr));
-        System.out.println(Arrays.toString(frequency));
+        //System.out.println(Arrays.toString(arr));
+        //System.out.println(Arrays.toString(frequency));
         return result;
     }
 
     // 训练函数
     public void fit(double[] vector, int label){
+        /* 将vector进行归一化
+        double max = vector[0];
+        for (double v : vector) {
+            if (v >= max) {
+                max = v;
+            }
+        }
+        for (int i = 0; i < vector.length; i++) {
+            vector[i] /= max;
+        }
+        */
         // 将训练数据添加到训练集中
         double[][][] new_train_set = new double[this.train_set.length + 1][2][];
         System.arraycopy(this.train_set, 0, new_train_set, 0, this.train_set.length);
@@ -75,19 +86,83 @@ public class knn {
 
     // 预测函数
     public int predict(double[] vector){
+        /* 将vector进行归一化
+        double max = vector[0];
+        for (double v : vector) {
+            if (v >= max) {
+                max = v;
+            }
+        }
+        for (int i = 0; i < vector.length; i++) {
+            // 若max为0，则不进行归一化
+            if (max != 0) {
+                vector[i] /= max;
+            }
+        }
+        */
         double maxDistance = 0;
         double[][] voteBlock = new double[0][2];
-
         for (double[][] train_set : this.train_set) {
+
 
             double distance = this.dist(train_set[0], vector);
             int label = (int) train_set[1][0];
+
             if (voteBlock.length < this.k){
-                
+                double [][]new_voteBlock = new double[voteBlock.length + 1][2];
+                System.arraycopy(voteBlock, 0, new_voteBlock, 0, voteBlock.length);
+                new_voteBlock[voteBlock.length][0] = distance;
+                new_voteBlock[voteBlock.length][1] = label;
+                voteBlock = new_voteBlock;
+
+                double []distArray = new double[voteBlock.length];
+                for (int i = 0; i < voteBlock.length; i++) {
+                    distArray[i] = voteBlock[i][0];
+                }
+
+                maxDistance = this.updateMax(distArray);
+            }
+            else{
+                if(distance < maxDistance){
+                    boolean flag = true;
+                    int count = 0;
+                    while (flag){
+                        if(voteBlock[count][0] == maxDistance){
+                            // System.out.println("delete");
+                            // 删除第count个元素，将distance和label插入到第count个元素
+                            voteBlock[count][0] = distance;
+                            voteBlock[count][1] = label;
+
+                            double []distArray = new double[voteBlock.length];
+                            for (int i = 0; i < voteBlock.length; i++) {
+                                distArray[i] = voteBlock[i][0];
+                            }
+
+                            maxDistance = this.updateMax(distArray);
+                            flag = false;
+                        }
+                        else{
+                            if(count < voteBlock.length - 1){
+                                count++;
+                            }
+                            else{
+                                flag = false;
+                            }
+                        }
+                    }
+                }
             }
         }
+        int []votes = new int[voteBlock.length];
+        for(int i = 0; i < voteBlock.length; i++){
+            votes[i] = (int) voteBlock[i][1];
+        }
+        // System.out.println(voteBlock.length);
+        System.out.println(Arrays.deepToString(voteBlock));
+        System.out.println(Arrays.toString(votes));
+
         // 返回k个数据中出现最多的标签
-        return this.mode(k_labels);
+        return this.mode(votes);
     }
 
 }

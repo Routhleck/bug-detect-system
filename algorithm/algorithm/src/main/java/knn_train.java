@@ -45,7 +45,7 @@ public class knn_train {
         // String ProjectPath=knn_train.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         // System.out.println(ProjectPath);
         // knn参数设置
-        int k = 20;
+        int k = 5;
 
         // 读取训练集csv，为Datasets/AEEEM/csv/JDT.csv
         double[][][] train_set = new double[0][][];
@@ -65,8 +65,8 @@ public class knn_train {
         System.out.println("测试集读取完成，测试集大小：" + test_set.length);
         // 测试集标签比例
         int buggy = 0;
-        for (int i = 0; i < test_set.length; i++) {
-            if (test_set[i][1][0] == 1) {
+        for (double[][] doubles : test_set) {
+            if (doubles[1][0] == 1) {
                 buggy++;
             }
         }
@@ -84,7 +84,7 @@ public class knn_train {
         int[] result = new int[test_set.length];
         for (int i = 0; i < test_set.length; i++) {
             result[i] = knn.predict(test_set[i][0]);
-            System.out.println("第" + (i+1) + "个测试样本，预测结果为：" + result[i] + "，实际结果为：" + test_set[i][1][0]);
+            System.out.println("第" + (i+1) + "个测试样本，预测结果为：" + result[i] + "，实际结果为：" + (int)test_set[i][1][0]);
         }
         System.out.println("测试完成");
         // 原本的标签
