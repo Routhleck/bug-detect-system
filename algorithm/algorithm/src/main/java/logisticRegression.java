@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * @program: algorithm
  * @description: Logistic Regression class
@@ -16,12 +18,30 @@ public class logisticRegression {
         return 1 / (1 + Math.exp(-z));
     }
 
+    // 计算损失函数, 为对数损失函数
+    public double loss(double[][] train_set, double[] w) {
+        double loss = 0;
+        for (int i = 0; i < train_set.length; i++) {
+            double[] x = new double[train_set[i].length - 1];
+            for (int j = 0; j < train_set[i].length - 1; j++) {
+                x[j] = train_set[i][j];
+            }
+            double y = train_set[i][train_set[i].length - 1];
+            double z = 0;
+            for (int j = 0; j < x.length; j++) {
+                z += w[j] * x[j];
+            }
+            loss += y * Math.log(sigmoid(z)) + (1 - y) * Math.log(1 - sigmoid(z));
+        }
+        return -loss / train_set.length;
+    }
+
     // 预测函数, 返回sigmoid函数的值
     public double[] predict(double[][] x) {
         double[] result = new double[x.length];
         for (int i = 0; i < x.length; i++) {
             double z = 0;
-            for (int j = 0; j < x[i].length; j++) {
+            for (int j = 0; j < x[i].length - 1; j++) {
                 z += x[i][j] * w[j];
             }
             result[i] = sigmoid(z);
@@ -29,26 +49,29 @@ public class logisticRegression {
         return result;
     }
 
-    // 训练函数
-    public double[] train(double[][] x, double[] y, double lr, int max_iter) {
-        int m = x.length;
-        int n = x[0].length;
-        double[] w = new double[n];
+    // 训练函数, 极大似然估计 + 梯度下降
+    public void train(double[][] x,double[] y, double learning_rate, int max_iter){
+        // 初始化w
+        w = new double[x[0].length];
+        Arrays.fill(w, 0);
+        // 训练
         for (int i = 0; i < max_iter; i++) {
-            double[] h = predict(x);
-            for (int j = 0; j < n; j++) {
-                double sum = 0;
-                for (int k = 0; k < m; k++) {
-                    sum += (h[k] - y[k]) * x[k][j];
+            // 计算梯度
+            double[] gradient = new double[w.length];
+            for (int j = 0; j < x.length; j++) {
+                double z = 0;
+                for (int k = 0; k < x[j].length; k++) {
+                    z += w[k] * x[j][k];
                 }
-                w[j] -= lr * sum / m;
+                for (int k = 0; k < x[j].length; k++) {
+                    gradient[k] += (sigmoid(z) - y[j]) * x[j][k];
+                }
+            }
+            // 更新w
+            for (int j = 0; j < w.length; j++) {
+                w[j] -= learning_rate * gradient[j] / x.length;
             }
         }
-        return w;
-    }
-
-    public double[] train(double[][] x, double[] y) {
-        return train(x, y, 0.01, 1000);
     }
 
     // 计算准确率

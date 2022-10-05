@@ -41,8 +41,9 @@ public class logisticRegression_train {
     public static void main(String[] args) {
         // 读取训练集
         double[][] train_set = new double[0][];
+        // System.out.println(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/PDE.csv");
         try {
-            train_set = readTrainSet(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/PDE.csv");
+            train_set = readTrainSet(System.getProperty("user.dir") + "/Datasets/AEEEM/csv/PDE.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +51,7 @@ public class logisticRegression_train {
         // 读取测试集
         double[][] test_set = new double[0][];
         try {
-            test_set = readTrainSet(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/Lucene.csv");
+            test_set = readTrainSet(System.getProperty("user.dir") + "/Datasets/AEEEM/csv/Lucene.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -60,6 +61,14 @@ public class logisticRegression_train {
         // 训练集分为x和y
         double[][] x = new double[train_set.length][train_set[0].length - 1];
         double[] y = new double[train_set.length];
+        for (int i = 0; i < train_set.length; i++) {
+            for (int j = 0; j < train_set[0].length - 1; j++) {
+                x[i][j] = train_set[i][j];
+            }
+            y[i] = train_set[i][train_set[0].length - 1];
+        }
+
+        System.out.println("debug");
 
         lr.train(x, y, 0.01, 1000);
         // 测试模型
