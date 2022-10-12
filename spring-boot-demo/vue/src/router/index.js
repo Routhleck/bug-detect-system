@@ -26,14 +26,14 @@ const routes = [
       {
         path: '/predict',
         name: 'Predict',
-        component: () => import("@/views/Login")
+        component: () => import("@/views/Predict")
       },
     ]
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import("@/views/Predict")
+    component: () => import("@/views/Login")
   },
   {
     path: '/register',
