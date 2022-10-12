@@ -19,15 +19,14 @@ const routes = [
 
       },
       {
-        path: 'book',
-        name: 'Book',
-        component: () => import("@/views/Book"),
-
-      },
-      {
         path: '/person',
         name: 'Person',
         component: () => import("@/views/Person")
+      },
+      {
+        path: '/predict',
+        name: 'Predict',
+        component: () => import("@/views/Login")
       },
     ]
   },

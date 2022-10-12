@@ -19,8 +19,8 @@
             <el-icon><Avatar /></el-icon>用户管理
           </el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="book">
-        <el-icon><Setting /></el-icon>书籍管理
+      <el-menu-item index="data" :route="{path: '/'}">
+        <el-icon><Setting /></el-icon>数据管理
       </el-menu-item>
     </el-menu>
   </div>

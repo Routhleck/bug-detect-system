@@ -66,6 +66,8 @@ export default {
   },
   methods:{
     login() {
+      this.$router.push("/")
+      /*
       // 这里设置的意思是只有在rules规定满足的情况下valid之后才会执行request请求
       this.$refs['form'].validate((valid) =>{
         if (valid){
@@ -87,7 +89,7 @@ export default {
             }
           })
         }
-      })
+      })*/
     }
   }
 }
