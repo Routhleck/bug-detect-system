@@ -5,7 +5,7 @@
                 <!--面包屑导航区域-->
                 <div class="gl">
                     <el-select class="data_data" @change="select_data" :disabled="disabled_data" v-model="value_data"
-                        placeholder="请选择">
+                        placeholder="请选择训练集">
                         <el-option v-for="item in options_data" :key="item.value" :label="item.label"
                             :value="item.value">
                         </el-option>
@@ -13,7 +13,7 @@
                 </div>
                 <div class="gl">
                     <el-select class="csv_select" @change="select_csv" :disabled="disabled_csv" v-model="value_csv"
-                        placeholder="请选择">
+                        placeholder="请选择测试集">
                         <el-option v-for="item in options_csv" :key="item.value" :label="item.label"
                             :value="item.value">
                         </el-option>
@@ -21,7 +21,7 @@
                 </div>
                 <div class="gl">
                     <el-select class="alg_select" @change="select_alg" :disabled="disabled_alg" v-model="value_alg"
-                        placeholder="请选择">
+                        placeholder="请选择算法">
                         <el-option v-for="item in options_alg" :key="item.value" :label="item.label"
                             :value="item.value">
                         </el-option>
@@ -123,12 +123,12 @@ export default {
             loding: false,
             options_data: [{
                 value: '选项1',
-                label: '数据集1'
+                label: 'csv1'
             }, {
                 value: '选项2',
-                label: '数据集2'
+                label: 'csv2'
             }],
-            value_data: '请选择数据集',
+            value_data: '请选择训练集',
             options_csv: [{
                 value: '选项1',
                 label: 'csv1'
@@ -136,7 +136,7 @@ export default {
                 value: '选项2',
                 label: 'csv2'
             }],
-            value_csv: '请选择csv文件',
+            value_csv: '请选择测试集',
             options_alg: [{
                 value: '选项1',
                 label: 'KNN'
