@@ -24,7 +24,7 @@
           <el-icon><location /></el-icon>
           软件缺陷预测
         </template>
-        <el-menu-item index="predict">
+        <el-menu-item index="model">
           <el-icon><House /></el-icon>模型构建
         </el-menu-item>
         <el-menu-item index="record">
