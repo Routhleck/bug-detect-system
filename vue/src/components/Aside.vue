@@ -27,7 +27,7 @@
         <el-menu-item index="predict">
           <el-icon><House /></el-icon>模型构建
         </el-menu-item>
-        <el-menu-item index="history">
+        <el-menu-item index="record">
           <el-icon><Avatar /></el-icon>历史信息
         </el-menu-item>
       </el-sub-menu>

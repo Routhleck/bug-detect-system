@@ -17,8 +17,8 @@
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item prop ="password">
-        <el-input :prefix-icon="Lock" v-model="form.password" show-password>
+      <el-form-item prop ="password" >
+        <el-input  :prefix-icon="Lock" v-model="form.password" show-password>
           <template #prefix>
             <el-icon class="el-input__icon"><Lock /></el-icon>
           </template>
@@ -28,7 +28,7 @@
         <el-button style="width: 100%" type="primary" @click="login">登录</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button style="width: 100%" type="" @click="$router.push('/register')">没有密码？点此注册</el-button>
+        <el-button style="width: 100%" type="danger" @click="$router.push('/register')">没有密码？点此注册</el-button>
       </el-form-item>
       </el-form>
     </div>
