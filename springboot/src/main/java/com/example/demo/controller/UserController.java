@@ -22,7 +22,6 @@ public class UserController {
     @PostMapping("/login")
     public Result<?> login(@RequestBody User user) {
         User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername,user.getUsername()).eq(User::getPassword,user.getPassword()));
-
         if (res == null){
             return Result.error("-1","用户名或者密码错误");
         }
@@ -52,14 +51,14 @@ public class UserController {
         return Result.success();
     }
 
-    // 更新操作
+    // 更新用户\信息操作
     @PutMapping
     public Result<?> update(@RequestBody User user) {
         userMapper.updateById(user);
         return Result.success();
     }
 
-    // 更新操作
+    // 删除用户操作
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable Long id) {
         userMapper.deleteById(id);
