@@ -2,36 +2,39 @@
   <div>
     <el-menu
         style="width: 200px; min-height: calc(100vh - 50px)"
-        default-active="user"
+        :default-active="path"
         router
         class="el-menu-vertical-demo">
-      <!--       注意上方使用的一个router方法，当加入这个属性之后，下方的<el-menu-item index="login">中的index即为跳转路由；这就是el-menu的自带的内部方法-->
-<!--      导航一-->
       <el-sub-menu index="1">
-        <template #title>
-          <el-icon><location /></el-icon>
-          系统管理
-        </template>
-          <el-menu-item index="login">
-            <el-icon><House /></el-icon>主页
-          </el-menu-item>
-          <el-menu-item index="user">
-            <el-icon><Avatar /></el-icon>用户管理
-          </el-menu-item>
+        <template #title>系统管理</template>
+        <el-menu-item index="/predict">预测</el-menu-item>
+        <el-menu-item index="/user" v-if="user.role === 1">用户管理</el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="book">
-        <el-icon><Setting /></el-icon>书籍管理
-      </el-menu-item>
+      <el-menu-item index="/book">书籍管理</el-menu-item>
     </el-menu>
   </div>
 </template>
 
 <script>
-import { Location,Setting,House,Avatar} from '@element-plus/icons';
+import request from "@/utils/request";
+
 export default {
   name: "Aside",
-  components:{
-    Location,Setting,House,Avatar
+  data(){
+    return{
+      user:{},
+      path: this.$route.path
+    }
+  },
+  created() {
+    let userStr = sessionStorage.getItem("user")||"{}"
+    this.user = JSON.parse(userStr)
+
+    request.get("/user/" + this.user.id).then(res=>{
+      if (res.code === '0'){
+        this.user =res.data
+      }
+    })
   }
 }
 </script>

@@ -1,7 +1,3 @@
-// const { defineConfig } = require('@vue/cli-service')
-// module.exports = defineConfig({
-//   transpileDependencies: true
-// })
 // 跨域配置
 module.exports = {
   devServer: {                //记住，别写错了devServer//设置本地默认端口  选填
@@ -11,7 +7,7 @@ module.exports = {
         target: 'http://localhost:9090',     //代理的目标地址
         changeOrigin: true,              //是否设置同源，输入是的
         pathRewrite: {                   //路径重写
-            '^/api': ''                     //选择忽略拦截器里面的内容
+          '^/api': ''                     //选择忽略拦截器里面的内容
         }
       }
     }

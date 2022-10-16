@@ -1,108 +1,128 @@
 <template>
   <div style="padding: 10px">
-    <!--    功能区-->
     <div style="margin: 10px 0">
       <el-button type="primary" @click="add">新增</el-button>
-      <el-button type="primary">导入</el-button>
-      <el-button type="primary">导出</el-button>
     </div>
-    <!--    搜索区-->
+
     <div style="margin: 10px 0">
-      <el-input v-model="search" placeholder="请输入要搜索的内容。" clearable style="width: 25%"/>
-      <el-button type="primary" style="margin-left: 5px" @click="load">搜索</el-button>
+      <el-input v-model="search" placeholder="输入关键字" style="width: 20%" clearable/>
+      <el-button type="primary" style="margin-left: 5px" @click="load">查询</el-button>
     </div>
-    <el-table :data="tableData" border stripe style="width: auto">
-      <el-table-column prop="id" label="ID" width="180" sortable=""/>
-      <el-table-column prop="username" label="用户名" width="180" />
-      <el-table-column prop="nickName" label="昵称" />
-      <el-table-column prop="age" label="年龄" />
-      <el-table-column prop="sex" label="性别" />
-      <el-table-column prop="address" label="地址" />
-      <el-table-column  label="操作" >
+
+    <el-table :data="tableData" border stripe style="width: 100%">
+      <el-table-column prop="id" label="ID"  sortable/>
+      <el-table-column prop="name" label="名称" />
+      <el-table-column prop="price" label="价格" />
+      <el-table-column prop="author" label="作者" />
+      <el-table-column prop="createTime" label="出版时间" />
+      <el-table-column label="封面">
         <template #default="scope">
-          <el-button  size="small"  @click="handleEdit(scope.row)">编辑</el-button>
+          <el-image
+              style="width: 100px; height: 100px"
+              :src="scope.row.cover"
+              :preview-src-list="[scope.row.cover]"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="操作" width="120">
+        <template #default="scope">
+          <el-button link type="primary" @click="handleEdit(scope.row)">编辑</el-button>
           <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
             <template #reference>
-              <el-button size="small" type="danger">删除</el-button>
+              <el-button type="text">删除</el-button>
             </template>
           </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
+
     <div style="margin: 10px 0">
       <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :currentPage="currentPage"
+          v-model:currentPage="currentPage"
+          v-model:page-size="pageSize"
           :page-sizes="[5, 10, 20]"
-          :page-size="pageSize"
+          :small="small"
+          :disabled="disabled"
+          :background="background"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total"/>
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange">
+      </el-pagination>
 
       <el-dialog v-model="dialogVisible" title="提示" width="30%">
-        <el-form :model="form"  label-width="120px">
-          <el-form-item label="用户名">
-            <el-input v-model="form.username" style="width: 80%"/>
+        <el-form :model="form" label-width="120px">
+          <el-form-item label="名称">
+            <el-input v-model="form.name" style="width: 80%"/>
           </el-form-item>
-          <el-form-item label="昵称">
-            <el-input v-model="form.nickName" style="width: 80%"/>
+          <el-form-item label="价格">
+            <el-input v-model="form.price" style="width: 80%"/>
           </el-form-item>
-          <el-form-item label="年龄">
-            <el-input v-model="form.age" style="width: 80%"/>
+          <el-form-item label="作者">
+            <el-input v-model="form.author" style="width: 80%"/>
           </el-form-item>
-          <el-form-item label="性别">
-            <el-radio v-model="form.sex" label="男">男</el-radio>
-            <el-radio v-model="form.sex" label="女">女</el-radio>
-            <el-radio v-model="form.sex" label="未知">未知</el-radio>
+          <el-form-item label="出版时间">
+            <el-date-picker v-model="form.createTime" value-format="YYYY-MM-DD" type="date" style="width: 80%" clearable/>
           </el-form-item>
-          <el-form-item label="地址">
-            <el-input type = "textarea" v-model="form.address" style="width: 80%"/>
+          <el-form-item label="封面">
+            <el-upload
+                ref="upload"
+                action="http://localhost:9090/files/upload" :on-success="filesUploadSuccess">
+              <el-button type="primary">点击上传</el-button>
+            </el-upload>
           </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="save">确定</el-button>
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
           </span>
         </template>
       </el-dialog>
+
     </div>
   </div>
+
 </template>
 
-<script >
+<script>
 
-// 这里的request其实就是集成了axios工具的一个方法
-import request from "@/utils/ruquest";
+
+import request from "@/utils/request";
 
 export default {
   name: 'Book',
   components: {
 
   },
-  data() {
+  data(){
     return{
-      form:{},
-      dialogVisible: false,
       search:'',
       currentPage: 1,
       pageSize: 10,
       total: 0,
-      tableData:[]
+      dialogVisible:false,
+      form:{},
+      tableData: [
+      ]
     }
   },
   created() {
     this.load()
   },
   methods:{
-    load() {
-      request.get("/book", {
-        params: {
+    filesUploadSuccess(res){
+      console.log(res)
+      this.form.cover = res.data
+    },
+    load(){
+      request.get("/book",{
+        params:{
           pageNum: this.currentPage,
           pageSize: this.pageSize,
           search: this.search
         }
-      }).then(res => {
+      }).then(res=>{
         console.log(res)
         this.tableData = res.data.records
         this.total = res.data.total
@@ -111,10 +131,11 @@ export default {
     add(){
       this.dialogVisible = true
       this.form = {}
+      this.$refs['upload'].clearFiles()
     },
     save(){
-      if (this.form.id) {//更新
-        request.put("/book", this.form).then(res => {
+      if (this.form.id){//更新
+        request.put("/book",this.form).then(res => {
           console.log(res)
           if (res.code === '0') {
             this.$message({
@@ -123,16 +144,15 @@ export default {
             })
           } else {
             this.$message({
-              type: "error",
+              type: "success",
               message: res.msg
             })
           }
-          this.load() //刷新表格数据
-          this.dialogVisible = false //关闭弹窗
+          this.load()
+          this.dialogVisible = false
         })
-      } else {
-        // 使用axios进行数据的传输交互
-        request.post("/book", this.form).then(res => {
+      }else {//新增
+        request.post("/book",this.form).then(res =>{
           console.log(res)
           if (res.code === '0') {
             this.$message({
@@ -141,12 +161,12 @@ export default {
             })
           } else {
             this.$message({
-              type: "error",
+              type: "success",
               message: res.msg
             })
           }
-          this.load() //刷新表格数据
-          this.dialogVisible = false //关闭弹窗
+          this.load()
+          this.dialogVisible = false
         })
       }
 
@@ -154,11 +174,13 @@ export default {
     handleEdit(row){
       this.form = JSON.parse(JSON.stringify(row))
       this.dialogVisible = true
+      this.$nextTick(()=>{
+        this.$refs['upload'].clearFiles()
+      })
     },
     handleDelete(id){
       console.log(id)
-      // 这里与后端bookController的deleteMapping中的 “@DeleteMapping("/{id}")” 这个相对应，通过占位传递给后台
-      request.delete("/book/" + id).then(res =>{
+      request.delete("/book/"+id).then(res=>{
         if (res.code === '0') {
           this.$message({
             type: "success",
@@ -166,24 +188,19 @@ export default {
           })
         } else {
           this.$message({
-            type: "error",
+            type: "success",
             message: res.msg
           })
         }
-        // 删除之后重新加载表格数据
         this.load()
       })
     },
-    handleSizeChange(pageSize) {  // 改变当前每页的个数触发
-      // 注意更新pageSize
-      this.pageSize = pageSize
+    handleSizeChange(){//改变每页个数
       this.load()
     },
-    handleCurrentChange(pageNum){  // 改变当前页码触发
-      // 注意更新pageNum
-      this.currentPage = pageNum
+    handleCurrentChange(){//改变当前页面
       this.load()
-    }
+    },
   }
 }
 </script>
