@@ -13,6 +13,7 @@ import com.example.demo.Utils.Sets_process;
 import com.example.demo.common.Result;
 import com.example.demo.common.knn;
 import com.example.demo.common.logisticRegression;
+import com.example.demo.entity.Predict;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,15 +52,15 @@ public class PredictController {
     }
     //傻瓜接口
     @PostMapping("/predict")
-    public JSONArray pre(String algorithm, String train_sets, String test_sets) throws JSONException {
+    public JSONArray pre(@RequestBody Predict predict1) throws JSONException {
             List list=new ArrayList();
 
-        if (algorithm.equals("knn")){
+        if (predict1.getAlgorithm().equals("knn")){
             double[][][] test_set = new double[0][][];
             double[][][] train_set = new double[0][][];
             int k = 5;
             knn knn_pre = new knn(k);
-            if (train_sets.equals("JDT.csv")){
+            if (predict1.getTrain_sets().equals("JDT.csv")){
                 try {
                     train_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/csv/JDT.csv");
 
@@ -75,7 +76,7 @@ public class PredictController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("PDE.csv")){
+                if (predict1.getTest_sets().equals("PDE.csv")){
 
                     try {
                             test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/PDE.arff");
@@ -112,7 +113,7 @@ public class PredictController {
 
 
                 }
-                else if (test_sets.equals("Lucene.csv")){
+                else if (predict1.getTest_sets().equals("Lucene.csv")){
                         try {
                             test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/Lucene.csv");
                         } catch (IOException e) {
@@ -149,7 +150,7 @@ public class PredictController {
                     };
 
             }
-            else if(train_sets.equals("PDE.csv")){
+            else if(predict1.getTrain_sets().equals("PDE.csv")){
                 try {
                     train_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/csv/PDE.csv");
 
@@ -165,7 +166,7 @@ public class PredictController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("JDT.csv")){
+                if (predict1.getTest_sets().equals("JDT.csv")){
                     try {
                         test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/JDT.csv");
                     } catch (IOException e) {
@@ -199,7 +200,7 @@ public class PredictController {
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
-                else if (test_sets.equals("Lucene.csv")){
+                else if (predict1.getTest_sets().equals("Lucene.csv")){
                     try {
                         test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/Lucene.csv");
                     } catch (IOException e) {
@@ -235,7 +236,7 @@ public class PredictController {
 
                 };
             }
-            else if(train_sets.equals("Lucene.csv")){
+            else if(predict1.getTrain_sets().equals("Lucene.csv")){
                 try {
                     train_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/csv/Lucene.csv");
 
@@ -251,7 +252,7 @@ public class PredictController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("JDT.csv")){
+                if (predict1.getTest_sets().equals("JDT.csv")){
                     try {
                         test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/JDT.csv");
                     } catch (IOException e) {
@@ -285,7 +286,7 @@ public class PredictController {
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
-                else if (test_sets.equals("PDE.csv")){
+                else if (predict1.getTest_sets().equals("PDE.csv")){
                     try {
                         test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/PDE.arff");
                     } catch (IOException e) {
@@ -324,19 +325,19 @@ public class PredictController {
             }
 
         }
-        if (algorithm.equals("logicRegression")) {
+        if (predict1.getAlgorithm().equals("logicRegression")) {
             double[][] test_set = new double[0][];
             double[][] train_set = new double[0][];
             List list1=new ArrayList();
 
-            if (train_sets.equals("JDT.csv")){
+            if (predict1.getTrain_sets().equals("JDT.csv")){
                 try {
                     train_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/csv/JDT.csv");
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("PDE.csv")){
+                if (predict1.getTest_sets().equals("PDE.csv")){
                     Map<String, String> map=new HashMap<>();
                     ObjectMapper mapper=new ObjectMapper();
                     try {
@@ -372,7 +373,7 @@ public class PredictController {
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
-                else if (test_sets.equals("Lucene.csv")){
+                else if (predict1.getTest_sets().equals("Lucene.csv")){
                     try {
                         test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/Lucene.csv");
                     } catch (IOException e) {
@@ -405,13 +406,13 @@ public class PredictController {
                     return ja;
                 };
             }
-            else if(train_sets.equals("PDE.csv")){
+            else if(predict1.getTrain_sets().equals("PDE.csv")){
                 try {
                     train_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/csv/PDE.csv");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("JDT.csv")){
+                if (predict1.getTest_sets().equals("JDT.csv")){
                     try {
                         test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/JDT.csv");
                     } catch (IOException e) {
@@ -443,7 +444,7 @@ public class PredictController {
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
-                else if (test_sets.equals("Lucene.csv")){
+                else if (predict1.getTest_sets().equals("Lucene.csv")){
                     try {
                         test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/Lucene.csv");
                     } catch (IOException e) {
@@ -476,14 +477,14 @@ public class PredictController {
                     return ja;
                 };
             }
-            else if(train_sets.equals("Lucene.csv")){
+            else if(predict1.getTrain_sets().equals("Lucene.csv")){
                 try {
                     train_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/csv/Lucene.csv");
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("JDT.csv")){
+                if (predict1.getTest_sets().equals("JDT.csv")){
                     try {
                         test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/JDT.csv");
                     } catch (IOException e) {
@@ -515,7 +516,7 @@ public class PredictController {
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
-                else if (test_sets.equals("PDE.csv")){
+                else if (predict1.getTest_sets().equals("PDE.csv")){
                     try {
                         test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/PDE.arff");
                     } catch (IOException e) {
