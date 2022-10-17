@@ -103,11 +103,12 @@ public class PredictController {
                             }
                         }
                         accuracy /= test_set.length;
-                        list.add(accuracy);
+
 
                     for (int i = 0; i < result.length; i++) {
                         list.add(result[i]);
                     }
+                    list.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
 
@@ -144,6 +145,7 @@ public class PredictController {
                     for (int i = 0; i < result.length; i++) {
                         list.add(result[i]);
                     }
+                    list.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
 
@@ -192,11 +194,12 @@ public class PredictController {
                         }
                     }
                     accuracy /= test_set.length;
-                    list.add(accuracy);
+
 
                     for (int i = 0; i < result.length; i++) {
                         list.add(result[i]);
                     }
+                    list.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
@@ -226,11 +229,11 @@ public class PredictController {
                         }
                     }
                     accuracy /= test_set.length;
-                    list.add(accuracy);
+
 
                     for (int i = 0; i < result.length; i++) {
                         list.add(result[i]);
-                    }
+                    }list.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
 
@@ -278,11 +281,12 @@ public class PredictController {
                         }
                     }
                     accuracy /= test_set.length;
-                    list.add(accuracy);
+
 
                     for (int i = 0; i < result.length; i++) {
                         list.add(result[i]);
                     }
+                    list.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
@@ -312,11 +316,12 @@ public class PredictController {
                         }
                     }
                     accuracy /= test_set.length;
-                    list.add(accuracy);
+
 
                     for (int i = 0; i < result.length; i++) {
                         list.add(result[i]);
                     }
+                    list.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
 
@@ -365,11 +370,11 @@ public class PredictController {
 
                     // 计算准确率
                     double accuracy = lr.accuracy(predict, y);
-                    list1.add(accuracy);
+
 
                     for (int i = 0; i < predict.length; i++) {
                         list1.add(predict[i]);
-                    }
+                    }list1.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
@@ -397,11 +402,12 @@ public class PredictController {
                     double[] predict = lr.predict(test_set);
 
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
+                    double accuracy = lr.accuracy(predict, y);
 
                     for (int i = 0; i < predict.length; i++) {
                         list1.add(predict[i]);
                     }
+                    list1.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 };
@@ -436,11 +442,12 @@ public class PredictController {
                     double[] predict = lr.predict(test_set);
 
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
+                    double accuracy = lr.accuracy(predict, y);
 
                     for (int i = 0; i < predict.length; i++) {
                         list1.add(predict[i]);
                     }
+                    list1.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
@@ -468,11 +475,12 @@ public class PredictController {
                     double[] predict = lr.predict(test_set);
 
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
+                    double accuracy = lr.accuracy(predict, y);
 
                     for (int i = 0; i < predict.length; i++) {
                         list1.add(predict[i]);
                     }
+                    list1.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 };
@@ -508,11 +516,12 @@ public class PredictController {
                     double[] predict = lr.predict(test_set);
 
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
+                    double accuracy = lr.accuracy(predict, y);
 
                     for (int i = 0; i < predict.length; i++) {
                         list1.add(predict[i]);
                     }
+                    list1.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
                 }
@@ -540,11 +549,12 @@ public class PredictController {
                     double[] predict = lr.predict(test_set);
 
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
+                    double accuracy = lr.accuracy(predict, y);
 
                     for (int i = 0; i < predict.length; i++) {
                         list1.add(predict[i]);
                     }
+                    list1.add(accuracy);
                     JSONArray ja = JSONArray.fromObject(list);
                     return ja;
 
