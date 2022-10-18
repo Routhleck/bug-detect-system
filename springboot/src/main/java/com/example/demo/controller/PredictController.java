@@ -13,8 +13,8 @@ import com.example.demo.Utils.Sets_process;
 import com.example.demo.common.Result;
 import com.example.demo.common.knn;
 import com.example.demo.common.logisticRegression;
+import com.example.demo.entity.Predict;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +32,7 @@ import java.util.Map;
 @Controller
 @RestController
 @RequestMapping("/files")
+
 public class PredictController {
 
 
@@ -50,19 +51,24 @@ public class PredictController {
         return Result.success(ip + ":" + port + "/files/" + flag);//返回结果url
     }
     //傻瓜接口
-    @PostMapping("/predict")
-    public JSONArray pre(String algorithm, String train_sets, String test_sets) throws JSONException {
+    @PostMapping ("/predict")
+    public String pre(@RequestBody Predict predict1) throws JSONException {
             List list=new ArrayList();
-
-        if (algorithm.equals("knn")){
+            int TP=0;
+            int FP=0;
+            int TN=0;
+            int FN=0;
+            System.out.println(predict1.toString());
+        if (predict1.getAlgorithm().equals("KNN")){
+            String alg="KNN";
             double[][][] test_set = new double[0][][];
             double[][][] train_set = new double[0][][];
             int k = 5;
             knn knn_pre = new knn(k);
-            if (train_sets.equals("JDT.csv")){
+            if (predict1.getTrain_sets().equals("JDT.csv")){
                 try {
-                    train_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/csv/JDT.csv");
-
+                    String filename="JDT.csv";
+                    train_set=Sets_process.readTrainSet("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\"+filename);
                     // 训练
                     //System.out.println("开始训练");
                     for (double[][] v : train_set) {
@@ -75,10 +81,10 @@ public class PredictController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("PDE.csv")){
+                if (predict1.getTest_sets().equals("PDE.csv")){
 
                     try {
-                            test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/PDE.arff");
+                            test_set=Sets_process.readTrainSet("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\PDE.csv");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -99,22 +105,36 @@ public class PredictController {
                         for (int i = 0; i < test_set.length; i++) {
                             if (result[i] == label[i]) {
                                 accuracy++;
+                                 if (result[i]==0){
+                                     TN++;
+                                }
+                                 else if(result[i]==1){
+                                     TP++;
+                                 }
                             }
                         }
                         accuracy /= test_set.length;
-                        list.add(accuracy);
-
-                    for (int i = 0; i < result.length; i++) {
-                        list.add(result[i]);
+                    for (int i = 0; i < test_set.length; i++) {
+                        if (result[i]==1&label[i]==0){
+                            FN++;
+                        }
+                        else if (result[i]==0&label[i]==1)
+                            TP++;
                     }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+                    list.add(TP);
+                    list.add(TN);
+                    list.add(FP);
+                    list.add(FN);
+                    list.add(accuracy);
+//
+                    String json = "{\"alg\":\"" + alg + "\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
+                      return json;
 
 
                 }
-                else if (test_sets.equals("Lucene.csv")){
+                else if (predict1.getTest_sets().equals("Lucene.csv")){
                         try {
-                            test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/Lucene.csv");
+                            test_set=Sets_process.readTrainSet("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\Lucene.csv");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -130,28 +150,41 @@ public class PredictController {
                         for (int i = 0; i < test_set.length; i++) {
                             label[i] = (int) test_set[i][1][0];
                         }
-                        // 计算准确率
-                        double accuracy = 0;
-                        for (int i = 0; i < test_set.length; i++) {
-                            if (result[i] == label[i]) {
-                                accuracy++;
+                    // 计算准确率
+                    double accuracy = 0;
+                    for (int i = 0; i < test_set.length; i++) {
+                        if (result[i] == label[i]) {
+                            accuracy++;
+                            if (result[i]==0){
+                                TN++;
+                            }
+                            else if(result[i]==1){
+                                TP++;
                             }
                         }
-                        accuracy /= test_set.length;
-                    list.add(accuracy);
-
-                    for (int i = 0; i < result.length; i++) {
-                        list.add(result[i]);
                     }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+                    accuracy /= test_set.length;
+                    for (int i = 0; i < test_set.length; i++) {
+                        if (result[i]==1&label[i]==0){
+                            FN++;
+                        }
+                        else if (result[i]==0&label[i]==1)
+                            TP++;
+                    }
+                    list.add(TP);
+                    list.add(TN);
+                    list.add(FP);
+                    list.add(FN);
+                    list.add(accuracy);
+                    String json = "{\"alg\":\""+alg+"\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
 
+                    return json;
                     };
 
             }
-            else if(train_sets.equals("PDE.csv")){
+            else if(predict1.getTrain_sets().equals("PDE.csv")){
                 try {
-                    train_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/csv/PDE.csv");
+                    train_set=Sets_process.readTrainSet("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\PDE.csv");
 
                     // 训练
                     //System.out.println("开始训练");
@@ -165,9 +198,9 @@ public class PredictController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("JDT.csv")){
+                if (predict1.getTest_sets().equals("JDT.csv")){
                     try {
-                        test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/JDT.csv");
+                        test_set=Sets_process.readTrainSet("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\JDT.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -188,20 +221,35 @@ public class PredictController {
                     for (int i = 0; i < test_set.length; i++) {
                         if (result[i] == label[i]) {
                             accuracy++;
+
+                            if (result[i]==0){
+                                TN++;
+                            }
+                            else if(result[i]==1){
+                                TP++;
+                            }
                         }
                     }
                     accuracy /= test_set.length;
-                    list.add(accuracy);
-
-                    for (int i = 0; i < result.length; i++) {
-                        list.add(result[i]);
+                    for (int i = 0; i < test_set.length; i++) {
+                        if (result[i]==1&label[i]==0){
+                            FN++;
+                        }
+                        else if (result[i]==0&label[i]==1)
+                            TP++;
                     }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+                    list.add(TP);
+                    list.add(TN);
+                    list.add(FP);
+                    list.add(FN);
+                    list.add(accuracy);
+                    String json = "{\"alg\":\"" + alg + "\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
+
+                    return json;
                 }
-                else if (test_sets.equals("Lucene.csv")){
+                else if (predict1.getTest_sets().equals("Lucene.csv")){
                     try {
-                        test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/Lucene.csv");
+                        test_set=Sets_process.readTrainSet("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\Lucene.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -222,22 +270,36 @@ public class PredictController {
                     for (int i = 0; i < test_set.length; i++) {
                         if (result[i] == label[i]) {
                             accuracy++;
+
+                            if (result[i]==0){
+                                TN++;
+                            }
+                            else if(result[i]==1){
+                                TP++;
+                            }
                         }
                     }
                     accuracy /= test_set.length;
-                    list.add(accuracy);
-
-                    for (int i = 0; i < result.length; i++) {
-                        list.add(result[i]);
+                    for (int i = 0; i < test_set.length; i++) {
+                        if (result[i]==1&label[i]==0){
+                            FN++;
+                        }
+                        else if (result[i]==0&label[i]==1)
+                            TP++;
                     }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+                    list.add(TP);
+                    list.add(TN);
+                    list.add(FP);
+                    list.add(FN);
+                    list.add(accuracy);
+                    String json = "{\"alg\":\""+alg+"\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
 
+                    return json;
                 };
             }
-            else if(train_sets.equals("Lucene.csv")){
+            else if(predict1.getTrain_sets().equals("Lucene.csv")){
                 try {
-                    train_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/csv/Lucene.csv");
+                    train_set=Sets_process.readTrainSet("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\Lucene.csv");
 
                     // 训练
                     //System.out.println("开始训练");
@@ -251,9 +313,9 @@ public class PredictController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("JDT.csv")){
+                if (predict1.getTest_sets().equals("JDT.csv")){
                     try {
-                        test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/JDT.csv");
+                        test_set=Sets_process.readTrainSet("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\JDT.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -274,20 +336,35 @@ public class PredictController {
                     for (int i = 0; i < test_set.length; i++) {
                         if (result[i] == label[i]) {
                             accuracy++;
+
+                            if (result[i]==0){
+                                TN++;
+                            }
+                            else if(result[i]==1){
+                                TP++;
+                            }
                         }
                     }
                     accuracy /= test_set.length;
-                    list.add(accuracy);
-
-                    for (int i = 0; i < result.length; i++) {
-                        list.add(result[i]);
+                    for (int i = 0; i < test_set.length; i++) {
+                        if (result[i]==1&label[i]==0){
+                            FN++;
+                        }
+                        else if (result[i]==0&label[i]==1)
+                            TP++;
                     }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+                    list.add(TP);
+                    list.add(TN);
+                    list.add(FP);
+                    list.add(FN);
+                    list.add(accuracy);
+                    String json = "{\"alg\":\""+alg+"\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
+
+                    return json;
                 }
-                else if (test_sets.equals("PDE.csv")){
+                else if (predict1.getTest_sets().equals("PDE.csv")){
                     try {
-                        test_set=Sets_process.readTrainSet("algorithm/algorithm/Datasets/AEEEM/arff/PDE.arff");
+                        test_set=Sets_process.readTrainSet("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\PDE.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -308,39 +385,56 @@ public class PredictController {
                     for (int i = 0; i < test_set.length; i++) {
                         if (result[i] == label[i]) {
                             accuracy++;
+
+                            if (result[i]==0){
+                                TN++;
+                            }
+                            else if(result[i]==1){
+                                TP++;
+                            }
                         }
                     }
                     accuracy /= test_set.length;
-                    list.add(accuracy);
-
-                    for (int i = 0; i < result.length; i++) {
-                        list.add(result[i]);
+                    for (int i = 0; i < test_set.length; i++) {
+                        if (result[i]==1&label[i]==0){
+                            FN++;
+                        }
+                        else if (result[i]==0&label[i]==1)
+                            TP++;
                     }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+                    list.add(TP);
+                    list.add(TN);
+                    list.add(FP);
+                    list.add(FN);
+                    list.add(accuracy);
+                    String json = "{\"alg\":\""+ alg +"\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
+
+                    return json;
 
                 };
 
             }
 
         }
-        if (algorithm.equals("logicRegression")) {
+        if (predict1.getAlgorithm().equals("logicRegression")) {
             double[][] test_set = new double[0][];
             double[][] train_set = new double[0][];
             List list1=new ArrayList();
 
-            if (train_sets.equals("JDT.csv")){
+            String alg;
+            alg = "logicRegression";
+            if (predict1.getTrain_sets().equals("JDT.csv")){
                 try {
-                    train_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/csv/JDT.csv");
+                    train_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\JDT.csv");
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("PDE.csv")){
+                if (predict1.getTest_sets().equals("PDE.csv")){
                     Map<String, String> map=new HashMap<>();
                     ObjectMapper mapper=new ObjectMapper();
                     try {
-                        test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/PDE.arff");
+                        test_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\PDE.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -364,17 +458,24 @@ public class PredictController {
 
                     // 计算准确率
                     double accuracy = lr.accuracy(predict, y);
+                    TP=Sets_process.CountingTP(predict,y);
+                    TN=Sets_process.CountingTN(predict,y);
+                    FP=Sets_process.CountingFP(predict,y);
+                    FN=Sets_process.CountingFN(predict,y);
+
+
+                    list1.add(TP);
+                    list1.add(TN);
+                    list1.add(FP);
+                    list1.add(FN);
                     list1.add(accuracy);
+                    String json = "{\"alg\":\""+ alg +"\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
 
-                    for (int i = 0; i < predict.length; i++) {
-                        list1.add(predict[i]);
-                    }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+                    return json;
                 }
-                else if (test_sets.equals("Lucene.csv")){
+                else if (predict1.getTest_sets().equals("Lucene.csv")){
                     try {
-                        test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/Lucene.csv");
+                        test_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\Lucene.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }  // 训练模型
@@ -396,24 +497,32 @@ public class PredictController {
                     double[] predict = lr.predict(test_set);
 
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
+                    double accuracy = lr.accuracy(predict, y);
+                    TP=Sets_process.CountingTP(predict,y);
+                    TN=Sets_process.CountingTN(predict,y);
+                    FP=Sets_process.CountingFP(predict,y);
+                    FN=Sets_process.CountingFN(predict,y);
 
-                    for (int i = 0; i < predict.length; i++) {
-                        list1.add(predict[i]);
-                    }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+
+                    list1.add(TP);
+                    list1.add(TN);
+                    list1.add(FP);
+                    list1.add(FN);
+                    list1.add(accuracy);
+                    String json = "{\"alg\":\"" + alg + "\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
+
+                    return json;
                 };
             }
-            else if(train_sets.equals("PDE.csv")){
+            else if(predict1.getTrain_sets().equals("PDE.csv")){
                 try {
-                    train_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/csv/PDE.csv");
+                    train_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\PDE.csv");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("JDT.csv")){
+                if (predict1.getTest_sets().equals("JDT.csv")){
                     try {
-                        test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/JDT.csv");
+                        test_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\JDT.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }  // 训练模型
@@ -433,19 +542,26 @@ public class PredictController {
                     lr.train(x, y, 0.01, 1000);
                     // 测试模型
                     double[] predict = lr.predict(test_set);
-
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
+                    double accuracy = lr.accuracy(predict, y);
+                    TP=Sets_process.CountingTP(predict,y);
+                    TN=Sets_process.CountingTN(predict,y);
+                    FP=Sets_process.CountingFP(predict,y);
+                    FN=Sets_process.CountingFN(predict,y);
 
-                    for (int i = 0; i < predict.length; i++) {
-                        list1.add(predict[i]);
-                    }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+
+                    list1.add(TP);
+                    list1.add(TN);
+                    list1.add(FP);
+                    list1.add(FN);
+                    list1.add(accuracy);
+                    String json = "{\"alg\":\"" + alg + "\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
+
+                    return json;
                 }
-                else if (test_sets.equals("Lucene.csv")){
+                else if (predict1.getTest_sets().equals("Lucene.csv")){
                     try {
-                        test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/Lucene.csv");
+                        test_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\Lucene.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }  // 训练模型
@@ -465,27 +581,34 @@ public class PredictController {
                     lr.train(x, y, 0.01, 1000);
                     // 测试模型
                     double[] predict = lr.predict(test_set);
-
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
+                    double accuracy = lr.accuracy(predict, y);
+                    TP=Sets_process.CountingTP(predict,y);
+                    TN=Sets_process.CountingTN(predict,y);
+                    FP=Sets_process.CountingFP(predict,y);
+                    FN=Sets_process.CountingFN(predict,y);
 
-                    for (int i = 0; i < predict.length; i++) {
-                        list1.add(predict[i]);
-                    }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+
+                    list1.add(TP);
+                    list1.add(TN);
+                    list1.add(FP);
+                    list1.add(FN);
+                    list1.add(accuracy);
+                    String json = "{\"alg\":\"" + alg + "\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
+
+                    return json;
                 };
             }
-            else if(train_sets.equals("Lucene.csv")){
+            else if(predict1.getTrain_sets().equals("Lucene.csv")){
                 try {
-                    train_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/csv/Lucene.csv");
+                    train_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\Lucene.csv");
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (test_sets.equals("JDT.csv")){
+                if (predict1.getTest_sets().equals("JDT.csv")){
                     try {
-                        test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/JDT.csv");
+                        test_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\JDT.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }  // 训练模型
@@ -505,19 +628,26 @@ public class PredictController {
                     lr.train(x, y, 0.01, 1000);
                     // 测试模型
                     double[] predict = lr.predict(test_set);
-
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
+                    double accuracy = lr.accuracy(predict, y);
+                    TP=Sets_process.CountingTP(predict,y);
+                    TN=Sets_process.CountingTN(predict,y);
+                    FP=Sets_process.CountingFP(predict,y);
+                    FN=Sets_process.CountingFN(predict,y);
 
-                    for (int i = 0; i < predict.length; i++) {
-                        list1.add(predict[i]);
-                    }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+
+                    list1.add(TP);
+                    list1.add(TN);
+                    list1.add(FP);
+                    list1.add(FN);
+                    list1.add(accuracy);
+                    String json = "{\"alg\":\"" + alg + "\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
+
+                    return json;
                 }
-                else if (test_sets.equals("PDE.csv")){
+                else if (predict1.getTest_sets().equals("PDE.csv")){
                     try {
-                        test_set=Sets_process.readTrainSet_logic("algorithm/algorithm/Datasets/AEEEM/arff/PDE.arff");
+                        test_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\PDE.csv");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }  // 训练模型
@@ -539,21 +669,26 @@ public class PredictController {
                     double[] predict = lr.predict(test_set);
 
                     // 计算准确率
-                    double accuracy = lr.accuracy(predict, y); list1.add(accuracy);
-
-                    for (int i = 0; i < predict.length; i++) {
-                        list1.add(predict[i]);
-                    }
-                    JSONArray ja = JSONArray.fromObject(list);
-                    return ja;
+                    double accuracy = lr.accuracy(predict, y);
+                    TP=Sets_process.CountingTP(predict,y);
+                    TN=Sets_process.CountingTN(predict,y);
+                    FP=Sets_process.CountingFP(predict,y);
+                    FN=Sets_process.CountingFN(predict,y);
 
 
+                    list1.add(TP);
+                    list1.add(TN);
+                    list1.add(FP);
+                    list1.add(FN);
+                    list1.add(accuracy);
+                    String json = "{\"alg\":\"" + alg + "\",\"TP\":\"" + TP + "\",\"TN\":\"" + TN + "\",\"FP\":\"" + FP + "\",\"FN\":\"" + FN + "\",\"accuracy\":\"" + accuracy + "\"}";
+                    return json;
                 }
                 else {
                     System.out.println("false");
-
-
                 }
+
+
             }
 
 
@@ -585,6 +720,9 @@ public class PredictController {
         }
     }
     //傻瓜接口
+
+
+
 
 
 }
