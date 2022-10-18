@@ -17,11 +17,11 @@ const routes = [
           name: 'User',
           component: User,
         },
-        {
-          path: 'book',
-          name: 'Book',
-          component: Book,
-        },
+        // {
+        //   path: 'book',
+        //   name: 'Book',
+        //   component: Book,
+        // },
         {
           path: '/predict',
           name: 'Predict',

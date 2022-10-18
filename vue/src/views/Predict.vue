@@ -22,16 +22,16 @@
           </el-select>
         </div>
 
-        <div style="margin: 20px;width: 500px">
-          <el-upload drag action="http://localhost:9090/files/upload" :on-success="filesUploadSuccess">
-            <el-icon class="el-icon--upload">
-              <upload-filled />
-            </el-icon>
-            <div class="el-upload__text" style="color: deepskyblue">
-              添加文件
-            </div>
-          </el-upload>
-        </div>
+<!--        <div style="margin: 20px;width: 500px">-->
+<!--          <el-upload drag action="http://localhost:9090/files/upload" :on-success="filesUploadSuccess">-->
+<!--            <el-icon class="el-icon&#45;&#45;upload">-->
+<!--              <upload-filled />-->
+<!--            </el-icon>-->
+<!--            <div class="el-upload__text" style="color: deepskyblue">-->
+<!--              添加文件-->
+<!--            </div>-->
+<!--          </el-upload>-->
+<!--        </div>-->
 
         <div style="border: 1px solid lightskyblue;display: flex">
           <div style="text-align: center; padding: 10px; color: deepskyblue;width: 100px">
@@ -96,6 +96,11 @@ export default {
           value: 'PDE.csv',
           label: 'PDE.csv',
           disabled: false,
+        },
+        {
+          value: '请选择',
+          label: '请选择',
+          disabled: false,
         }],
       // value_data: '请选择训练集',
       // value_csv: '请选择测试集',
@@ -104,6 +109,19 @@ export default {
     }
   },
   methods: {
+    getCurrentTime() {
+      //获取当前时间并打印
+      var _this = this;
+      let yy = new Date().getFullYear();
+      let mm = new Date().getMonth()+1;
+      let dd = new Date().getDate();
+      let hh = new Date().getHours();
+      let mf = new Date().getMinutes()<10 ? '0'+new Date().getMinutes() : new Date().getMinutes();
+      let ss = new Date().getSeconds()<10 ? '0'+new Date().getSeconds() : new Date().getSeconds();
+      _this.gettime = yy+'/'+mm+'/'+dd+' '+hh+':'+mf+':'+ss;
+      console.log(_this.gettime);
+      return _this.gettime
+    },
     predict(result) {
       window.location.href = result
     },
@@ -114,15 +132,33 @@ export default {
       window.location.href = file
     },
     preview() {
-      this.form.uploadTime = new Date().getTime()
+      // this.form.uploadTime = new Date().getTime()
+
       console.log("post")
+      console.log(this.form)
       request.post("/file/prediction", this.form).then(res => {
         console.log(res)
-        this.load()
+        // this.load()
+        console.log("get2")
+
+        // this.tableData = res.data
+        let that = this
+        let tempList = that.tableData
+        tempList.push({
+          uploadTime : that.getCurrentTime(),
+          alg : res.alg,
+          TP : res.TP,
+          TN : res.TN,
+          FP : res.FP,
+          FN : res.FN,
+          accuracy : res.accuracy
+        })
+        that.tableData = tempList
+        console.log(res.data)
       })
     },
     filesUploadSuccess(res) {
-      console.log(res)
+      console.log(res.data)
       this.form.file = res.data
     },
     load() {
@@ -148,6 +184,7 @@ export default {
     labelClick(label) {
       console.log(label)
       for (let i = 0; i < 2; i++) {
+        this.options_data[i].disabled = false;
         if (this.options_data[i].label == label) {
           this.options_data[i].disabled = true;
           console.log(this.options_data[i]);

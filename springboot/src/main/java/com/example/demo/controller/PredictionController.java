@@ -32,7 +32,7 @@ public class PredictionController {
             String json= KNNtrain.knn_train(predict1.getTrain_sets(),predict1.getTest_sets());
             return json;
         }
-        if (predict1.getAlgorithm().equals("logicRegression")) {
+        if (predict1.getAlgorithm().equals("逻辑回归")) {
             String json= LogicRegression.logic_train(predict1.getTrain_sets(),predict1.getTest_sets());
             return json;
     }

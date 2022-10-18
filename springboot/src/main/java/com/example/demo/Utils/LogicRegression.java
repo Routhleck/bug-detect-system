@@ -14,8 +14,8 @@ public class LogicRegression {
     public static String logic_train(String train_setName,String test_setName){
         double[][] test_set = new double[0][];
         double[][] train_set = new double[0][];
-        List list1=new ArrayList();
-        List<Number> list=new ArrayList<Number>();
+
+        List<Number> list1=new ArrayList<Number>();
         String alg;
         alg = "logicRegression";
 
@@ -31,7 +31,7 @@ public class LogicRegression {
         }
 
         try {
-            test_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\PDE.csv");
+            test_set=Sets_process.readTrainSet_logic("C:\\Users\\86186\\Documents\\GitHub\\bug-detect-system\\algorithm\\algorithm\\Datasets\\AEEEM\\csv\\"+test_setName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,14 +60,14 @@ public class LogicRegression {
 
         lr.train(x, y, 0.01, 1000);
         // 测试模型
-        double[] predict = lr.predict(test_set);
+        double[] predict = lr.predict(x_test);
 
         // 计算准确率
-        double accuracy = lr.accuracy(predict, y);
-        TP=Sets_process.CountingTP(predict,y);
-        TN=Sets_process.CountingTN(predict,y);
-        FP=Sets_process.CountingFP(predict,y);
-        FN=Sets_process.CountingFN(predict,y);
+        double accuracy = lr.accuracy(predict, y_test);
+        TP=Sets_process.CountingTP(predict,y_test);
+        TN=Sets_process.CountingTN(predict,y_test);
+        FP=Sets_process.CountingFP(predict,y_test);
+        FN=Sets_process.CountingFN(predict,y_test);
 
 
         list1.add(TP);

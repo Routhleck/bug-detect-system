@@ -10,7 +10,7 @@
         <el-menu-item index="/predict">预测</el-menu-item>
         <el-menu-item index="/user" v-if="user.role === 1">用户管理</el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="/book">书籍管理</el-menu-item>
+<!--      <el-menu-item index="/book">书籍管理</el-menu-item>-->
     </el-menu>
   </div>
 </template>
