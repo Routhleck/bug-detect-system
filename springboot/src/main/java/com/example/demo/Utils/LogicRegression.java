@@ -47,6 +47,15 @@ public class LogicRegression {
             y[i] = train_set[i][train_set[0].length - 1];
         }
 
+        // 测试集分为x和y
+        double[][] x_test = new double[test_set.length][test_set[0].length - 1];
+        double[] y_test = new double[test_set.length];
+        for (int i = 0; i < test_set.length; i++) {
+            for (int j = 0; j < test_set[0].length - 1; j++) {
+                x_test[i][j] = test_set[i][j];
+            }
+            y_test[i] = test_set[i][test_set[0].length - 1];
+        }
         System.out.println("debug");
 
         lr.train(x, y, 0.01, 1000);
