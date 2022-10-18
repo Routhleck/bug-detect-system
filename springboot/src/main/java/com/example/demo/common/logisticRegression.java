@@ -77,7 +77,6 @@ public class logisticRegression {
     }
 
     // 计算准确率
-
     public double accuracy(double[] h, double[] y) {
         int correct = 0;
         for (int i = 0; i < h.length; i++) {

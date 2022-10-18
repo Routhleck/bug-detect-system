@@ -85,7 +85,7 @@ public class knn {
     }
 
     // 预测函数
-    public  int predict(double[] vector){
+    public int predict(double[] vector){
         /* 将vector进行归一化
         double max = vector[0];
         for (double v : vector) {

@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Layout from "@/layout/Layout";
 import User from "@/views/User";
-import Book from "@/views/Book";
 import Person from "@/views/Person";
 import Predict from "@/views/Predict";
+import Record from "@/views/Record";
+// import Lo from "@/views/Lo";
 
 const routes = [
   {
@@ -23,7 +24,12 @@ const routes = [
         //   component: Book,
         // },
         {
-          path: '/predict',
+            path: 'record',
+            name: 'Record',
+            component: Record,
+        },
+        {
+          path: 'predict',
           name: 'Predict',
           component: Predict,
         },
@@ -39,6 +45,11 @@ const routes = [
     name: 'Login',
     component: ()=>import("@/views/Login")
   },
+  // {
+  //       path: '/lo',
+  //       name: 'Lo',
+  //       component: Lo
+  // },
   {
     path: '/register',
     name: 'Register',

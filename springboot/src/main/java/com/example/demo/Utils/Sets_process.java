@@ -1,4 +1,4 @@
-package com.example.demo.Utils;/*
+package com.example.demo.utils;/*
  author:@Antidote
  date:2022/10/1615:46
  
@@ -66,43 +66,5 @@ public class Sets_process { public static double[][][] readTrainSet(String path)
             }
         }
         return train_set;
-    }
-    public static int CountingTP(double[] h, double[] y) {
-        int ture = 0;
-        for (int i = 0; i < h.length; i++) {
-            if (h[i] >= 0.5 && y[i] == 1) {
-                ture++;
-            }
-        }
-        return ture;
-    }
-
-    public static int CountingTN(double[] h, double[] y) {
-        int falesnumber = 0;
-        for (int i = 0; i < h.length; i++) {
-            if (h[i] <0.5 && y[i] == 0) {
-                falesnumber++;
-            }
-        }
-        return falesnumber;
-    }
-    public static int CountingFP(double[] h, double[] y) {
-        int falesnumber = 0;
-        for (int i = 0; i < h.length; i++) {
-            if (h[i] >= 0.5 && y[i] == 0) {
-                falesnumber++;
-            }
-        }
-        return falesnumber;
-    }
-
-    public static int CountingFN(double[] h, double[] y) {
-        int falesnumber = 0;
-        for (int i = 0; i < h.length; i++) {
-            if (h[i] < 0.5 && y[i] == 1) {
-                falesnumber++;
-            }
-        }
-        return falesnumber;
     }
 }

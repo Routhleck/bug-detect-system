@@ -10,7 +10,6 @@ import com.example.demo.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.sql.Wrapper;
 
 @RestController
 @RequestMapping("/user")
@@ -73,5 +72,4 @@ public class UserController {
         Page<User> userPage=userMapper.selectPage(new Page<>(pageNum,pageSize),wrapper);
         return Result.success(userPage);
     }
-
 }
