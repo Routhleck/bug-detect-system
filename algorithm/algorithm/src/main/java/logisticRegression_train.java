@@ -43,7 +43,7 @@ public class logisticRegression_train {
         double[][] train_set = new double[0][];
         // System.out.println(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/PDE.csv");
         try {
-            train_set = readTrainSet(System.getProperty("user.dir") + "/Datasets/AEEEM/csv/PDE.csv");
+            train_set = readTrainSet(System.getProperty("user.dir") + "/Datasets/AEEEM/csv/Lucene.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -51,7 +51,7 @@ public class logisticRegression_train {
         // 读取测试集
         double[][] test_set = new double[0][];
         try {
-            test_set = readTrainSet(System.getProperty("user.dir") + "/Datasets/AEEEM/csv/Lucene.csv");
+            test_set = readTrainSet(System.getProperty("user.dir") + "/Datasets/AEEEM/csv/JDT.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,15 +67,24 @@ public class logisticRegression_train {
             }
             y[i] = train_set[i][train_set[0].length - 1];
         }
+        // 测试集分为x和y
+        double[][] x_test = new double[test_set.length][test_set[0].length - 1];
+        double[] y_test = new double[test_set.length];
+        for (int i = 0; i < test_set.length; i++) {
+            for (int j = 0; j < test_set[0].length - 1; j++) {
+                x_test[i][j] = test_set[i][j];
+            }
+            y_test[i] = test_set[i][test_set[0].length - 1];
+        }
 
         System.out.println("debug");
 
         lr.train(x, y, 0.01, 1000);
         // 测试模型
-        double[] predict = lr.predict(test_set);
+        double[] predict = lr.predict(x_test);
 
         // 计算准确率
-        double accuracy = lr.accuracy(predict, y);
+        double accuracy = lr.accuracy(predict, y_test);
         System.out.println("准确率为：" + accuracy);
     }
 }
