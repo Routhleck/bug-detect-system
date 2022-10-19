@@ -50,7 +50,7 @@ public class knn_train {
         // 读取训练集csv，为Datasets/AEEEM/csv/JDT.csv
         double[][][] train_set = new double[0][][];
         try {
-            train_set = readTrainSet(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/PDE.csv");
+            train_set = readTrainSet(PDE.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -58,7 +58,7 @@ public class knn_train {
         // 读取测试集csv，为Datasets/AEEEM/csv/Lucene.csv
         double[][][] test_set = new double[0][][];
         try {
-            test_set = readTrainSet(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/JDT.csv");
+            test_set = readTrainSet(JDT.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

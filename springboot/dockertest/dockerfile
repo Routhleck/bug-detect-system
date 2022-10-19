@@ -1,4 +1,7 @@
 FROM openjdk:11
+ADD JDT.csv /JDT.csv
+ADD Lucene.csv /Lucene.csv
+ADD PDE.csv /PDE.csv
 COPY demo-0.0.1-SNAPSHOT.jar /app.jar
 CMD java -jar /app.jar
 EXPOSE 9090

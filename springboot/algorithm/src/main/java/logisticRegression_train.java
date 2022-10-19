@@ -43,7 +43,7 @@ public class logisticRegression_train {
         double[][] train_set = new double[0][];
         // System.out.println(System.getProperty("user.dir") + "/algorithm/Datasets/AEEEM/csv/PDE.csv");
         try {
-            train_set = readTrainSet(System.getProperty("user.dir") + "/Datasets/AEEEM/csv/PDE.csv");
+            train_set = readTrainSet(PDE.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -51,7 +51,7 @@ public class logisticRegression_train {
         // 读取测试集
         double[][] test_set = new double[0][];
         try {
-            test_set = readTrainSet(System.getProperty("user.dir") + "/Datasets/AEEEM/csv/Lucene.csv");
+            test_set = readTrainSet(Lucene.csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

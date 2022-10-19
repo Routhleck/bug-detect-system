@@ -33,7 +33,7 @@ public class RecordController {
             int k = 5;
             knn knn_pre = new knn(k);
             try {
-                train_set= Sets_process.readTrainSet(System.getProperty("user.dir")+"/algorithm/Datasets/AEEEM/csv/"+trainFile);
+                train_set= Sets_process.readTrainSet(trainFile);
 
                 // 训练
                 //System.out.println("开始训练");
@@ -48,7 +48,7 @@ public class RecordController {
             }
 
             try {
-                test_set=Sets_process.readTrainSet(System.getProperty("user.dir")+"/algorithm/Datasets/AEEEM/csv/"+testFile);
+                test_set=Sets_process.readTrainSet(testFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -85,14 +85,14 @@ public class RecordController {
             double[][] train_set = new double[0][];
 
             try {
-                train_set=Sets_process.readTrainSet_logic(System.getProperty("user.dir")+"/algorithm/Datasets/AEEEM/csv/"+trainFile);
+                train_set=Sets_process.readTrainSet_logic(trainFile);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             try {
-                test_set=Sets_process.readTrainSet_logic(System.getProperty("user.dir")+"/algorithm/Datasets/AEEEM/csv/"+testFile);
+                test_set=Sets_process.readTrainSet_logic(testFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
