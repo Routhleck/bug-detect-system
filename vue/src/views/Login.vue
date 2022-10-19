@@ -86,7 +86,7 @@ export default {
                 message: "登录成功"
               })
               sessionStorage.setItem("user", JSON.stringify(res.data))  // 缓存用户信息
-              this.$router.push("/")
+              this.$router.push("/predict")
             } else {
               this.$message({
                 type: "error",
